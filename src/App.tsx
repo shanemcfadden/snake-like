@@ -1,3 +1,9 @@
-const App = () => <h1>Hello Vite!</h1>;
+import { Container } from "./Container";
+import { Display } from "./Display";
 
-export default App;
+export const App = () => (
+  <Container>
+    <h1>Snake</h1>
+    <Display />
+  </Container>
+);
