@@ -19,5 +19,9 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      "arrow-body-style": ["error", "as-needed"],
+      curly: ["error", "all"],
+    },
   },
 ]);
