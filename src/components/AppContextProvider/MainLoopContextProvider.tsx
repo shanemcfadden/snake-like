@@ -1,11 +1,18 @@
-import { useCallback, useEffect, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  type PropsWithChildren,
+} from "react";
 import {
   useGameStateContext,
   useGameStateDispatchContext,
-} from "../contexts/GameStateContext";
-import { useSnakeDirectionContext } from "../contexts/SnakeDirectionContext";
+} from "../../contexts/GameStateContext";
+import { useSnakeDirectionContext } from "../../contexts/SnakeDirectionContext";
+import { MainLoopContext } from "../../contexts/MainLoopContext";
 
-export const useStartGame = () => {
+export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
   const gameState = useGameStateContext();
   const dispatchGameState = useGameStateDispatchContext();
 
@@ -13,6 +20,8 @@ export const useStartGame = () => {
     useSnakeDirectionContext();
   const intervalRef = useRef<number | null>(null);
 
+  // TODO: this is not getting called since useStartGame is getting unmounted
+  // We should store this logic in some sort of persisted state that's not tied to the play button being visible
   useEffect(() => {
     if (gameState.status === "END" && intervalRef.current !== null) {
       clearInterval(intervalRef.current);
@@ -20,7 +29,7 @@ export const useStartGame = () => {
     }
   }, [gameState]);
 
-  return useCallback(
+  const start = useCallback(
     () => {
       resetDirection();
 
@@ -32,6 +41,14 @@ export const useStartGame = () => {
       }, 500);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [gameState],
+    [],
+  );
+
+  const value = useMemo(() => ({ start }), [start]);
+
+  return (
+    <MainLoopContext.Provider value={value}>
+      {children}
+    </MainLoopContext.Provider>
   );
 };

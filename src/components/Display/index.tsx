@@ -9,14 +9,14 @@ export const Display = () => {
   return (
     <div className={`border-2 grid grid-cols-20 gap-1`}>
       {Array.from({ length: DISPLAY_WIDTH * DISPLAY_HEIGHT }).map((_, i) => (
-          <DisplayPixel
-            key={i}
-            isOn={
-              gameState.status !== "START" &&
-              i === coordinateToIndex(gameState.snakeHead)
-            }
-          />
-        ))}
+        <DisplayPixel
+          key={i}
+          isOn={
+            gameState.status !== "START" &&
+            i === coordinateToIndex(gameState.snakeHead)
+          }
+        />
+      ))}
     </div>
   );
 };

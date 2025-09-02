@@ -5,8 +5,8 @@ import {
   useRef,
   type PropsWithChildren,
 } from "react";
-import type { Direction } from "../types";
-import { SnakeDirectionContext } from "../contexts/SnakeDirectionContext";
+import type { Direction } from "../../types";
+import { SnakeDirectionContext } from "../../contexts/SnakeDirectionContext";
 
 export const SnakeDirectionContextProvider = ({
   children,
@@ -40,10 +40,13 @@ export const SnakeDirectionContextProvider = ({
     ref.current = "right";
   }, []);
 
-  const context = useMemo(() => ({
+  const context = useMemo(
+    () => ({
       ref,
       reset,
-    }), [reset]);
+    }),
+    [reset],
+  );
 
   return (
     <SnakeDirectionContext.Provider value={context}>

@@ -1,12 +1,12 @@
 import { useReducer, type PropsWithChildren } from "react";
-import type { Coordinate, Direction } from "../types";
+import type { Coordinate, Direction } from "../../types";
 import {
   GameStateContext,
   GameStateDispatchContext,
   type GameState,
   type GameStateAction,
-} from "../contexts/GameStateContext";
-import { DISPLAY_HEIGHT, DISPLAY_WIDTH, STARTING_PIXEL } from "../constants";
+} from "../../contexts/GameStateContext";
+import { DISPLAY_HEIGHT, DISPLAY_WIDTH, STARTING_PIXEL } from "../../constants";
 
 export const GameStateContextProvider = ({ children }: PropsWithChildren) => {
   const [state, dispatch] = useReducer(reducer, {
@@ -83,4 +83,5 @@ const moveCoordinate = (
   }
 };
 
-const isValidCoordinate = ([x, y]: Coordinate): boolean => x >= 0 && x < DISPLAY_WIDTH && y >= 0 && y < DISPLAY_HEIGHT;
+const isValidCoordinate = ([x, y]: Coordinate): boolean =>
+  x >= 0 && x < DISPLAY_WIDTH && y >= 0 && y < DISPLAY_HEIGHT;

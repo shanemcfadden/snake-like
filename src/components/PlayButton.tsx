@@ -1,4 +1,4 @@
-import { useStartGame } from "../hooks/useStartGame";
+import { useMainLoopContext } from "../contexts/MainLoopContext";
 import { Button } from "./Button";
 
 type PlayButtonProps = {
@@ -6,7 +6,7 @@ type PlayButtonProps = {
 };
 
 export const PlayButton = ({ disabled }: PlayButtonProps) => {
-  const startGame = useStartGame();
+  const { start: startGame } = useMainLoopContext();
 
   return (
     <Button disabled={disabled} onClick={startGame}>
