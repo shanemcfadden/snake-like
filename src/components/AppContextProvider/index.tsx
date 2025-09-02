@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from "react";
 import { GameStateContextProvider } from "./GameStateContextProvider";
-import { SnakeDirectionContextProvider } from "./SnakeDirectionContextProvider";
+import { UserInputContextProvider } from "./UserInputContextProvider";
 import { MainLoopContextProvider } from "./MainLoopContextProvider";
 
 export const AppContextProvider = ({ children }: PropsWithChildren) => (
   <GameStateContextProvider>
-    <SnakeDirectionContextProvider>
+    <UserInputContextProvider>
       <MainLoopContextProvider>{children}</MainLoopContextProvider>
-    </SnakeDirectionContextProvider>
+    </UserInputContextProvider>
   </GameStateContextProvider>
 );

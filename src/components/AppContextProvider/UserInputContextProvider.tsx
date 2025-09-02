@@ -6,28 +6,26 @@ import {
   type PropsWithChildren,
 } from "react";
 import type { Direction } from "../../types";
-import { SnakeDirectionContext } from "../../contexts/SnakeDirectionContext";
+import { UserInputContext } from "../../contexts/UserInputContext";
 
-export const SnakeDirectionContextProvider = ({
-  children,
-}: PropsWithChildren) => {
-  const ref = useRef<Direction>("right");
+export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
+  const ref = useRef<Direction[]>([]);
 
   useEffect(() => {
     const handleArrowKey = (e: KeyboardEvent) => {
       e.preventDefault();
       switch (e.key) {
         case "ArrowUp":
-          ref.current = "up";
+          ref.current.push("up");
           break;
         case "ArrowDown":
-          ref.current = "down";
+          ref.current.push("down");
           break;
         case "ArrowLeft":
-          ref.current = "left";
+          ref.current.push("left");
           break;
         case "ArrowRight":
-          ref.current = "right";
+          ref.current.push("right");
           break;
       }
     };
@@ -37,7 +35,7 @@ export const SnakeDirectionContextProvider = ({
   }, []);
 
   const reset = useCallback(() => {
-    ref.current = "right";
+    ref.current = [];
   }, []);
 
   const context = useMemo(
@@ -49,8 +47,8 @@ export const SnakeDirectionContextProvider = ({
   );
 
   return (
-    <SnakeDirectionContext.Provider value={context}>
+    <UserInputContext.Provider value={context}>
       {children}
-    </SnakeDirectionContext.Provider>
+    </UserInputContext.Provider>
   );
 };
