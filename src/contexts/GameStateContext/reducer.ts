@@ -36,6 +36,7 @@ export const reducer = (
   if (!newHead) {
     return {
       status: "END",
+      snakeFood: state.snakeFood,
       snakeHead: state.snakeHead,
       snakeBody: state.snakeBody,
       snakeLength: state.snakeBody.length,

@@ -19,6 +19,7 @@ type EndOfGameState = {
   snakeHead: Coordinate;
   snakeBody: Coordinate[];
   snakeLength: number;
+  snakeFood: Coordinate;
 };
 
 export type GameStateAction =
