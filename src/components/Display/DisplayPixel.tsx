@@ -12,6 +12,6 @@ export const DisplayPixel = memo(({ color }: DisplayPixelProps) => {
 
 export type DisplayPixelColor = "primary" | "secondary";
 const DISPLAY_COLOR_TO_CLASS_MAP: Record<DisplayPixelColor, string> = {
-  primary: "bg-black",
-  secondary: "bg-green-600",
+  primary: "bg-primary",
+  secondary: "bg-secondary",
 };

@@ -9,7 +9,7 @@ export const Display = () => {
   const gameState = useGameStateContext();
 
   return (
-    <div className={`border-2 grid grid-cols-20 gap-1`}>
+    <div className={`border-1 border-primary grid grid-cols-20 gap-1`}>
       {Array.from({ length: DISPLAY_WIDTH * DISPLAY_HEIGHT }).map((_, i) => (
         <DisplayPixel key={i} color={calculateColor(i, gameState)} />
       ))}

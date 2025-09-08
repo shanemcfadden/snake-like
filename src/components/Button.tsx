@@ -7,7 +7,7 @@ type ButtonProps = PropsWithChildren<{
 
 export const Button = ({ disabled, onClick, children }: ButtonProps) => (
   <button
-    className="border border-black px-4 py-2 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+    className="bg-primary text-background border-black px-4 py-2 hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-primary"
     disabled={disabled}
     onClick={onClick}
   >

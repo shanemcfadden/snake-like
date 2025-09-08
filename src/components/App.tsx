@@ -8,12 +8,14 @@ export const App = () => {
   const gameState = useGameStateContext();
   return (
     <Container>
-      <h1>Snake</h1>
-      {gameState.status === "END" ? (
-        <ResetButton />
-      ) : (
-        <PlayButton disabled={gameState.status === "IN_PROGRESS"} />
-      )}
+      <h1 className="my-4 text-center text-xl text-primary">Snake-like</h1>
+      <div className="my-2">
+        {gameState.status === "END" ? (
+          <ResetButton />
+        ) : (
+          <PlayButton disabled={gameState.status === "IN_PROGRESS"} />
+        )}
+      </div>
       <Display />
     </Container>
   );
