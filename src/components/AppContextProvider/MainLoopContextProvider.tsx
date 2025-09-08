@@ -36,7 +36,7 @@ export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
           userInput: userInputRef.current,
         });
         resetUserInput();
-      }, 500);
+      }, 200);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],

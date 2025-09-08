@@ -1,7 +1,15 @@
-import { DISPLAY_HEIGHT, DISPLAY_WIDTH, STARTING_PIXEL } from "../../constants";
+import { STARTING_PIXEL } from "../../constants";
 import type { Coordinate, Direction } from "../../types";
-import { findLast, not } from "../../util";
-import type { GameState, GameStateAction } from "./types";
+import {
+  findLast,
+  getMovedCoordinate,
+  getRandomCoordinate,
+  getRandomInteger,
+  isOppositeDirection,
+  isSameCoordinate,
+  not,
+} from "../../util";
+import { CoordinateMap, type GameState, type GameStateAction } from "./types";
 
 export const reducer = (
   state: GameState,
@@ -16,12 +24,15 @@ export const reducer = (
   }
 
   if (state.status === "START") {
+    const display = new CoordinateMap();
+    display.set(STARTING_PIXEL, true);
+
     return {
       status: "IN_PROGRESS",
-      snakeHead: STARTING_PIXEL,
+      display,
       snakeBody: [STARTING_PIXEL],
       snakeDirection: "right",
-      snakeFood: calculateNewFoodCoordinate(STARTING_PIXEL),
+      snakeFood: calculateNextFoodCoordinate(STARTING_PIXEL, display),
     };
   }
 
@@ -31,80 +42,79 @@ export const reducer = (
       not(isOppositeDirection(state.snakeDirection)),
     ) || state.snakeDirection;
 
-  const newHead = moveCoordinate(state.snakeHead, direction);
+  const newHead = calculateNextHeadCoordinate(
+    state.snakeBody,
+    direction,
+    state.display,
+  );
 
   if (!newHead) {
     return {
       status: "END",
+      display: state.display,
       snakeFood: state.snakeFood,
-      snakeHead: state.snakeHead,
       snakeBody: state.snakeBody,
       snakeLength: state.snakeBody.length,
     };
   }
 
-  const isEatingFood = isSameCoordinate(newHead, state.snakeFood);
+  const newDisplay = state.display.clone();
 
+  const isEatingFood = isSameCoordinate(newHead, state.snakeFood);
+  if (isEatingFood) {
+    newDisplay.set(newHead, true);
+    return {
+      status: "IN_PROGRESS",
+      display: newDisplay,
+      snakeBody: [newHead, ...state.snakeBody],
+      snakeFood: calculateNextFoodCoordinate(state.snakeFood, newDisplay),
+      snakeDirection: direction,
+    };
+  }
+
+  newDisplay.set(state.snakeBody[state.snakeBody.length - 1], false);
+  // Must set head after removing tail in case they are the same coordinate
+  newDisplay.set(newHead, true);
   return {
     status: "IN_PROGRESS",
-    snakeHead: newHead,
+    display: newDisplay,
     snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
-    snakeFood: isEatingFood
-      ? calculateNewFoodCoordinate(state.snakeFood)
-      : state.snakeFood,
+    snakeFood: state.snakeFood,
     snakeDirection: direction,
   };
 };
 
-const moveCoordinate = (
-  coordinate: Coordinate,
+const calculateNextHeadCoordinate = (
+  snakeBody: Coordinate[],
   direction: Direction,
+  display: CoordinateMap,
 ): Coordinate | null => {
-  switch (direction) {
-    case "up":
-      return isValidCoordinate([coordinate[0], coordinate[1] - 1])
-        ? [coordinate[0], coordinate[1] - 1]
-        : null;
-    case "down":
-      return isValidCoordinate([coordinate[0], coordinate[1] + 1])
-        ? [coordinate[0], coordinate[1] + 1]
-        : null;
-    case "left":
-      return isValidCoordinate([coordinate[0] - 1, coordinate[1]])
-        ? [coordinate[0] - 1, coordinate[1]]
-        : null;
-    case "right":
-      return isValidCoordinate([coordinate[0] + 1, coordinate[1]])
-        ? [coordinate[0] + 1, coordinate[1]]
-        : null;
-  }
+  const currentHead = snakeBody[0];
+  const currentTail = snakeBody[snakeBody.length - 1];
+
+  const movedHead = getMovedCoordinate(currentHead, direction);
+
+  const isExistingCoordinateUnoccupied =
+    display.get(movedHead) === false ||
+    // Though the tail is occupied, it will move away in the same tick as the move
+    isSameCoordinate(movedHead, currentTail);
+
+  return isExistingCoordinateUnoccupied ? movedHead : null;
 };
 
-const isOppositeDirection =
-  (direction1: Direction) => (direction2: Direction) =>
-    (direction1 === "up" && direction2 === "down") ||
-    (direction1 === "down" && direction2 === "up") ||
-    (direction1 === "left" && direction2 === "right") ||
-    (direction1 === "right" && direction2 === "left");
-
-const isValidCoordinate = ([x, y]: Coordinate): boolean =>
-  x >= 0 && x < DISPLAY_WIDTH && y >= 0 && y < DISPLAY_HEIGHT;
-
-const isSameCoordinate = (
-  [x1, y1]: Coordinate,
-  [x2, y2]: Coordinate,
-): boolean => x1 === x2 && y1 === y2;
-
-const calculateNewFoodCoordinate = (
+const calculateNextFoodCoordinate = (
   oldFoodCoordinate: Coordinate,
+  display: CoordinateMap,
+  attempt = 0,
 ): Coordinate => {
-  const randomCoordnate: Coordinate = [
-    Math.floor(Math.random() * DISPLAY_WIDTH),
-    Math.floor(Math.random() * DISPLAY_HEIGHT),
-  ];
+  if (attempt > 5) {
+    const allFalseCoordinates = display.getAllFalseCoordinates();
+    return allFalseCoordinates[getRandomInteger(allFalseCoordinates.length)];
+  }
 
-  if (isSameCoordinate(randomCoordnate, oldFoodCoordinate)) {
-    return calculateNewFoodCoordinate(oldFoodCoordinate);
+  const randomCoordnate = getRandomCoordinate();
+  if (display.get(randomCoordnate) === true) {
+    return calculateNextFoodCoordinate(oldFoodCoordinate, display, attempt + 1);
   }
 
   return randomCoordnate;

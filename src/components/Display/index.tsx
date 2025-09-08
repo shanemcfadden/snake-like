@@ -3,20 +3,24 @@ import type { Coordinate } from "../../types";
 import { DISPLAY_HEIGHT, DISPLAY_WIDTH } from "../../constants";
 import { useGameStateContext } from "../../contexts/GameStateContext";
 import type { GameState } from "../../contexts/GameStateContext/types";
+import { isSameCoordinate } from "../../util";
 
 export const Display = () => {
   const gameState = useGameStateContext();
 
   return (
     <div className={`border-2 grid grid-cols-20 gap-1`}>
-      {Array.from({ length: DISPLAY_WIDTH * DISPLAY_HEIGHT }).map((_, i) => {
-        return <DisplayPixel key={i} color={calculateColor(i, gameState)} />;
-      })}
+      {Array.from({ length: DISPLAY_WIDTH * DISPLAY_HEIGHT }).map((_, i) => (
+        <DisplayPixel key={i} color={calculateColor(i, gameState)} />
+      ))}
     </div>
   );
 };
 
-const coordinateToIndex = ([x, y]: Coordinate) => y * DISPLAY_HEIGHT + x;
+const indexToCoordinate = (index: number): Coordinate => [
+  index % DISPLAY_WIDTH,
+  Math.floor(index / DISPLAY_WIDTH),
+];
 
 const calculateColor = (
   index: number,
@@ -26,12 +30,12 @@ const calculateColor = (
     return null;
   }
 
-  if (index === coordinateToIndex(gameState.snakeHead)) {
-    return "primary";
+  if (isSameCoordinate(indexToCoordinate(index), gameState.snakeFood)) {
+    return "secondary";
   }
 
-  if (index === coordinateToIndex(gameState.snakeFood)) {
-    return "secondary";
+  if (gameState.display.get(indexToCoordinate(index))) {
+    return "primary";
   }
 
   return null;
