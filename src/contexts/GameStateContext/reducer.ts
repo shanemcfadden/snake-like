@@ -21,7 +21,7 @@ export const reducer = (
       snakeHead: STARTING_PIXEL,
       snakeBody: [STARTING_PIXEL],
       snakeDirection: "right",
-      snakeFood: [5, 5],
+      snakeFood: calculateNewFoodCoordinate(STARTING_PIXEL),
     };
   }
 
@@ -43,11 +43,15 @@ export const reducer = (
     };
   }
 
+  const isEatingFood = isSameCoordinate(newHead, state.snakeFood);
+
   return {
     status: "IN_PROGRESS",
     snakeHead: newHead,
     snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
-    snakeFood: state.snakeFood,
+    snakeFood: isEatingFood
+      ? calculateNewFoodCoordinate(state.snakeFood)
+      : state.snakeFood,
     snakeDirection: direction,
   };
 };
@@ -85,3 +89,23 @@ const isOppositeDirection =
 
 const isValidCoordinate = ([x, y]: Coordinate): boolean =>
   x >= 0 && x < DISPLAY_WIDTH && y >= 0 && y < DISPLAY_HEIGHT;
+
+const isSameCoordinate = (
+  [x1, y1]: Coordinate,
+  [x2, y2]: Coordinate,
+): boolean => x1 === x2 && y1 === y2;
+
+const calculateNewFoodCoordinate = (
+  oldFoodCoordinate: Coordinate,
+): Coordinate => {
+  const randomCoordnate: Coordinate = [
+    Math.floor(Math.random() * DISPLAY_WIDTH),
+    Math.floor(Math.random() * DISPLAY_HEIGHT),
+  ];
+
+  if (isSameCoordinate(randomCoordnate, oldFoodCoordinate)) {
+    return calculateNewFoodCoordinate(oldFoodCoordinate);
+  }
+
+  return randomCoordnate;
+};
