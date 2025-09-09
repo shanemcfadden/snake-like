@@ -6,6 +6,7 @@ export type GameState = StartOfGameState | InProgressState | EndOfGameState;
 type InProgressState = {
   status: "IN_PROGRESS";
   display: CoordinateMap;
+  score: number;
   snakeDirection: Direction;
   snakeBody: Coordinate[];
   snakeFood: Coordinate;
@@ -18,8 +19,8 @@ type StartOfGameState = {
 type EndOfGameState = {
   status: "END";
   display: CoordinateMap;
+  score: number;
   snakeBody: Coordinate[];
-  snakeLength: number;
   snakeFood: Coordinate;
 };
 
