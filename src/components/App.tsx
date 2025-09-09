@@ -9,12 +9,15 @@ export const App = () => {
   return (
     <Container>
       <h1 className="my-4 text-center text-xl text-primary">Snake-like</h1>
-      <div className="my-2">
-        {gameState.status === "END" ? (
-          <ResetButton />
-        ) : (
-          <PlayButton disabled={gameState.status === "IN_PROGRESS"} />
-        )}
+      <div className="flex justify-between items-end">
+        <div>
+          {gameState.status === "END" ? (
+            <ResetButton />
+          ) : (
+            <PlayButton disabled={gameState.status === "IN_PROGRESS"} />
+          )}
+        </div>
+        {gameState.status !== "START" && <div>Score: {gameState.score}</div>}
       </div>
       <Display />
     </Container>

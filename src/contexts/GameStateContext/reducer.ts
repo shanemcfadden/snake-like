@@ -30,6 +30,7 @@ export const reducer = (
     return {
       status: "IN_PROGRESS",
       display,
+      score: 0,
       snakeBody: [STARTING_PIXEL],
       snakeDirection: "right",
       snakeFood: calculateNextFoodCoordinate(STARTING_PIXEL, display),
@@ -52,9 +53,9 @@ export const reducer = (
     return {
       status: "END",
       display: state.display,
+      score: state.score,
       snakeFood: state.snakeFood,
       snakeBody: state.snakeBody,
-      snakeLength: state.snakeBody.length,
     };
   }
 
@@ -66,6 +67,7 @@ export const reducer = (
     return {
       status: "IN_PROGRESS",
       display: newDisplay,
+      score: state.score + 1,
       snakeBody: [newHead, ...state.snakeBody],
       snakeFood: calculateNextFoodCoordinate(state.snakeFood, newDisplay),
       snakeDirection: direction,
@@ -78,6 +80,7 @@ export const reducer = (
   return {
     status: "IN_PROGRESS",
     display: newDisplay,
+    score: state.score,
     snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
     snakeFood: state.snakeFood,
     snakeDirection: direction,
