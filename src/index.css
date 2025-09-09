@@ -5,3 +5,10 @@
   --color-secondary: #A1A4DD;
   --color-background: #222222;
 }
+
+@font-face {
+  font-family: Silkscreen;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Silkscreen-Regular.ttf") format("truetype");
+}
