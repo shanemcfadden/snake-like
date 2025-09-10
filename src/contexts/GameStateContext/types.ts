@@ -26,7 +26,7 @@ type EndOfGameState = {
 
 export type GameStateAction =
   | { type: "TICK"; userInput: Direction[] }
-  | { type: "RESET" };
+  | { type: "START" };
 
 export class CoordinateMap {
   private map: Map<string, boolean>;

@@ -15,15 +15,7 @@ export const reducer = (
   state: GameState,
   action: GameStateAction,
 ): GameState => {
-  if (action.type === "RESET") {
-    return { status: "START" };
-  }
-
-  if (state.status === "END") {
-    return state;
-  }
-
-  if (state.status === "START") {
+  if (action.type === "START" || state.status === "START") {
     const display = new CoordinateMap();
     display.set(STARTING_PIXEL, true);
 
@@ -35,6 +27,10 @@ export const reducer = (
       snakeDirection: "right",
       snakeFood: calculateNextFoodCoordinate(STARTING_PIXEL, display),
     };
+  }
+
+  if (state.status === "END") {
+    return state;
   }
 
   const direction =

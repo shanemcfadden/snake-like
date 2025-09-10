@@ -29,6 +29,7 @@ export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
   const start = useCallback(
     () => {
       resetUserInput();
+      dispatchGameState({ type: "START" });
 
       intervalRef.current = setInterval(() => {
         dispatchGameState({
