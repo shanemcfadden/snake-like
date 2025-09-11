@@ -11,28 +11,32 @@ import { UserInputContext } from "../../contexts/UserInputContext";
 export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
   const ref = useRef<Direction[]>([]);
 
+  const dispatchDirection = useCallback((direction: Direction) => {
+    ref.current.push(direction);
+  }, []);
+
   useEffect(() => {
     const handleArrowKey = (e: KeyboardEvent) => {
       e.preventDefault();
       switch (e.key) {
         case "ArrowUp":
-          ref.current.push("up");
+          dispatchDirection("up");
           break;
         case "ArrowDown":
-          ref.current.push("down");
+          dispatchDirection("down");
           break;
         case "ArrowLeft":
-          ref.current.push("left");
+          dispatchDirection("left");
           break;
         case "ArrowRight":
-          ref.current.push("right");
+          dispatchDirection("right");
           break;
       }
     };
 
     window.addEventListener("keydown", handleArrowKey);
     return () => window.removeEventListener("keydown", handleArrowKey);
-  }, []);
+  }, [dispatchDirection]);
 
   const reset = useCallback(() => {
     ref.current = [];
@@ -40,10 +44,11 @@ export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
 
   const context = useMemo(
     () => ({
+      dispatchDirection,
       ref,
       reset,
     }),
-    [reset],
+    [reset, dispatchDirection],
   );
 
   return (
