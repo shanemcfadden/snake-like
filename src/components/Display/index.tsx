@@ -30,7 +30,10 @@ export const Display = () => {
         <div className="my-auto text-center">
           {gameState.status === "END" && (
             <>
-              <div className="my-4 text-center text-lg">Game Over</div>
+              <div className="my-4 text-center text-2xl">Game Over</div>
+              {gameState.isHighScore && (
+                <div className="my-4 text-center">* * * High Score * * *</div>
+              )}
               <div className="my-4">Final Score: {gameState.score}</div>
             </>
           )}
