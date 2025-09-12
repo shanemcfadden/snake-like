@@ -22,6 +22,7 @@ export const reducer = (
     return {
       status: "IN_PROGRESS",
       display,
+      highScore: state.status !== "START" ? state.highScore : 0,
       score: 0,
       snakeBody: [STARTING_PIXEL],
       snakeDirection: "right",
@@ -47,11 +48,10 @@ export const reducer = (
 
   if (!newHead) {
     return {
+      ...state,
       status: "END",
-      display: state.display,
-      score: state.score,
-      snakeFood: state.snakeFood,
-      snakeBody: state.snakeBody,
+      highScore: Math.max(state.highScore, state.score),
+      isHighScore: state.score > state.highScore,
     };
   }
 
@@ -63,6 +63,7 @@ export const reducer = (
     return {
       status: "IN_PROGRESS",
       display: newDisplay,
+      highScore: state.highScore,
       score: state.score + 1,
       snakeBody: [newHead, ...state.snakeBody],
       snakeFood: calculateNextFoodCoordinate(state.snakeFood, newDisplay),
@@ -74,11 +75,10 @@ export const reducer = (
   // Must set head after removing tail in case they are the same coordinate
   newDisplay.set(newHead, true);
   return {
+    ...state,
     status: "IN_PROGRESS",
     display: newDisplay,
-    score: state.score,
     snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
-    snakeFood: state.snakeFood,
     snakeDirection: direction,
   };
 };
