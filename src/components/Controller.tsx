@@ -11,7 +11,7 @@ import type { Direction } from "../types";
 import { useCallback, type MouseEventHandler } from "react";
 
 export const Controller = () => (
-  <div className="grid grid-cols-3 w-72">
+  <div className="grid grid-cols-3 w-48">
     <div />
     <ControllerButton direction={"up"} />
     <div />
@@ -47,8 +47,8 @@ const ControllerButton = ({ direction }: { direction: Direction }) => {
         "flex",
         "justify-center",
         "rounded-full",
-        "text-6xl",
-        "w-24",
+        "text-4xl",
+        "w-16",
       ].join(" ")}
       onClick={onClick}
     >
