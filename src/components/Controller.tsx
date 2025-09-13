@@ -38,7 +38,18 @@ const ControllerButton = ({ direction }: { direction: Direction }) => {
 
   return (
     <button
-      className="bg-primary active:bg-secondary w-24 aspect-square text-6xl rounded-full flex justify-center align-center"
+      className={[
+        "active:bg-secondary",
+        "align-center",
+        "aspect-square",
+        "bg-primary",
+        "cursor-pointer",
+        "flex",
+        "justify-center",
+        "rounded-full",
+        "text-6xl",
+        "w-24",
+      ].join(" ")}
       onClick={onClick}
     >
       <div className="my-auto">

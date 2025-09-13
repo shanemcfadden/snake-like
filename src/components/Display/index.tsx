@@ -13,7 +13,7 @@ export const Display = () => {
   if (gameState.status === "IN_PROGRESS") {
     return (
       <DisplayContainer>
-        <div className={`grid grid-cols-20 gap-1`}>
+        <div className={`cursor-none grid grid-cols-20 gap-1`}>
           {Array.from({ length: DISPLAY_WIDTH * DISPLAY_HEIGHT }).map(
             (_, i) => (
               <DisplayPixel key={i} color={calculateColor(i, gameState)} />
