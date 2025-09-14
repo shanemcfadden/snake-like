@@ -11,18 +11,19 @@ import {
 } from "../../contexts/GameStateContext";
 import { useUserInputContext } from "../../contexts/UserInputContext";
 import { MainLoopContext } from "../../contexts/MainLoopContext";
+import { none, some, type Option } from "../../util";
 
 export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
   const gameState = useGameStateContext();
   const dispatchGameState = useGameStateDispatchContext();
 
   const { ref: userInputRef, reset: resetUserInput } = useUserInputContext();
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = useRef<Option<number>>(INITIAL_INTERVAL_REF);
 
   useEffect(() => {
-    if (gameState.status === "END" && intervalRef.current !== null) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+    if (gameState.status === "END") {
+      intervalRef.current.map(clearInterval);
+      intervalRef.current = none();
     }
   }, [gameState]);
 
@@ -31,13 +32,15 @@ export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
       resetUserInput();
       dispatchGameState({ type: "START" });
 
-      intervalRef.current = setInterval(() => {
-        dispatchGameState({
-          type: "TICK",
-          userInput: userInputRef.current,
-        });
-        resetUserInput();
-      }, 200);
+      intervalRef.current = some(
+        setInterval(() => {
+          dispatchGameState({
+            type: "TICK",
+            userInput: userInputRef.current,
+          });
+          resetUserInput();
+        }, 200),
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -51,3 +54,5 @@ export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
     </MainLoopContext.Provider>
   );
 };
+
+const INITIAL_INTERVAL_REF = none<number>();
