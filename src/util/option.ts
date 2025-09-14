@@ -1,9 +1,14 @@
 export type Option<T> = Some<T> | None<T>;
 
 interface IOption<T> {
+  andThen<U>(f: (value: T) => Option<U>): Option<U>;
+
+  filter<U extends T>(predicate: (value: T) => value is U): Option<U>;
+  filter(predicate: (value: T) => boolean): Option<T>;
+
   map<U>(f: (value: T) => U): Option<U>;
 
-  orElse(defaultValue: T): Option<T>;
+  orElse(f: () => Option<T>): Option<T>;
 
   unwrap(): T | null;
 
@@ -20,6 +25,14 @@ class Some<T> implements IOption<T> {
 
   constructor(value: T) {
     this.value = value;
+  }
+
+  andThen<U>(f: (value: T) => Option<U>): Option<U> {
+    return f(this.value);
+  }
+
+  filter(predicate: (value: T) => boolean): Option<T> {
+    return predicate(this.value) ? this : new None<T>();
   }
 
   map<U>(f: (value: T) => U): Option<U> {
@@ -40,12 +53,20 @@ class Some<T> implements IOption<T> {
 }
 
 class None<T> implements IOption<T> {
+  andThen<U>(): Option<U> {
+    return new None<U>();
+  }
+
+  filter() {
+    return new None<T>();
+  }
+
   map<U>(): Option<U> {
     return new None<U>();
   }
 
-  orElse(defaultValue: T): Option<T> {
-    return new Some(defaultValue);
+  orElse(f: () => Option<T>): Option<T> {
+    return f();
   }
 
   unwrap(): null {
