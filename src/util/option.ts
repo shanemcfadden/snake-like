@@ -26,7 +26,7 @@ class Some<T> implements IOption<T> {
     return new Some<U>(f(this.value));
   }
 
-  orElse<T>(_: T): Option<T> {
+  orElse<T>(): Option<T> {
     return this as unknown as Option<T>;
   }
 
@@ -34,13 +34,13 @@ class Some<T> implements IOption<T> {
     return this.value;
   }
 
-  unwrapOrElse(_: T): T {
+  unwrapOrElse(): T {
     return this.value;
   }
 }
 
 class None<T> implements IOption<T> {
-  map<U>(_: (value: T) => U): Option<U> {
+  map<U>(): Option<U> {
     return new None<U>();
   }
 
