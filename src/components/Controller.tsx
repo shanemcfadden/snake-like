@@ -25,7 +25,7 @@ export const Controller = () => (
 );
 
 const ControllerButton = ({ direction }: { direction: Direction }) => {
-  const { dispatchDirection } = useUserInputContext();
+  const { activeDirections, dispatchDirection } = useUserInputContext();
   const onClick: MouseEventHandler<HTMLButtonElement> = useCallback(
     (e) => {
       e.preventDefault();
@@ -42,7 +42,7 @@ const ControllerButton = ({ direction }: { direction: Direction }) => {
         "active:bg-secondary",
         "align-center",
         "aspect-square",
-        "bg-primary",
+        activeDirections.has(direction) ? "bg-secondary" : "bg-primary",
         "cursor-pointer",
         "flex",
         "justify-center",

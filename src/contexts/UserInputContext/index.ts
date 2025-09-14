@@ -2,10 +2,12 @@ import { createContext, useContext, type RefObject } from "react";
 import type { Direction } from "../../types";
 
 export const UserInputContext = createContext<{
+  activeDirections: Set<Direction>;
   dispatchDirection: (direction: Direction) => void;
   ref: RefObject<Direction[]>;
   reset: () => void;
 }>({
+  activeDirections: new Set(),
   dispatchDirection: () => {},
   ref: { current: [] },
   reset: () => {},
