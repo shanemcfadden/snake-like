@@ -8,6 +8,7 @@ import {
 import type { Direction } from "../../../types";
 import { useActiveDirections } from "./useActiveDirections";
 import { UserInputContext } from "../../../contexts/UserInputContext";
+import { keyToDirection } from "./util";
 
 export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
   const ref = useRef<Direction[]>([]);
@@ -26,43 +27,16 @@ export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
         return;
       }
 
-      switch (e.key) {
-        case "ArrowUp":
-          dispatchDirection("up");
-          addActiveDirection("up");
-          break;
-        case "ArrowDown":
-          dispatchDirection("down");
-          addActiveDirection("down");
-          break;
-        case "ArrowLeft":
-          dispatchDirection("left");
-          addActiveDirection("left");
-          break;
-        case "ArrowRight":
-          dispatchDirection("right");
-          addActiveDirection("right");
-          break;
-      }
+      keyToDirection(e.key).map((direction) => {
+        dispatchDirection(direction);
+        addActiveDirection(direction);
+      });
     };
 
     const handleArrowKeyup = (e: KeyboardEvent) => {
       e.preventDefault();
 
-      switch (e.key) {
-        case "ArrowUp":
-          removeActiveDirection("up");
-          break;
-        case "ArrowDown":
-          removeActiveDirection("down");
-          break;
-        case "ArrowLeft":
-          removeActiveDirection("left");
-          break;
-        case "ArrowRight":
-          removeActiveDirection("right");
-          break;
-      }
+      keyToDirection(e.key).map(removeActiveDirection);
     };
 
     window.addEventListener("keydown", handleArrowKeydown);
