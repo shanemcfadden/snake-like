@@ -7,7 +7,10 @@ import {
   getRandomInteger,
   isOppositeDirection,
   isSameCoordinate,
+  type Option,
   not,
+  none,
+  some,
 } from "../../util";
 import { CoordinateMap, type GameState, type GameStateAction } from "./types";
 
@@ -40,54 +43,48 @@ export const reducer = (
       not(isOppositeDirection(state.snakeDirection)),
     ) || state.snakeDirection;
 
-  const newHead = calculateNextHeadCoordinate(
-    state.snakeBody,
-    direction,
-    state.display,
-  );
+  return calculateNextHeadCoordinate(state.snakeBody, direction, state.display)
+    .map<GameState>((newHead) => {
+      const newDisplay = state.display.clone();
 
-  if (!newHead) {
-    return {
+      const isEatingFood = isSameCoordinate(newHead, state.snakeFood);
+      if (isEatingFood) {
+        newDisplay.set(newHead, true);
+        return {
+          status: "IN_PROGRESS",
+          display: newDisplay,
+          highScore: state.highScore,
+          score: state.score + 1,
+          snakeBody: [newHead, ...state.snakeBody],
+          snakeFood: calculateNextFoodCoordinate(state.snakeFood, newDisplay),
+          snakeDirection: direction,
+        };
+      }
+
+      newDisplay.set(state.snakeBody[state.snakeBody.length - 1], false);
+      // Must set head after removing tail in case they are the same coordinate
+      newDisplay.set(newHead, true);
+      return {
+        ...state,
+        status: "IN_PROGRESS",
+        display: newDisplay,
+        snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
+        snakeDirection: direction,
+      };
+    })
+    .unwrapOrElse({
       ...state,
       status: "END",
       highScore: Math.max(state.highScore, state.score),
       isHighScore: state.score > state.highScore,
-    };
-  }
-
-  const newDisplay = state.display.clone();
-
-  const isEatingFood = isSameCoordinate(newHead, state.snakeFood);
-  if (isEatingFood) {
-    newDisplay.set(newHead, true);
-    return {
-      status: "IN_PROGRESS",
-      display: newDisplay,
-      highScore: state.highScore,
-      score: state.score + 1,
-      snakeBody: [newHead, ...state.snakeBody],
-      snakeFood: calculateNextFoodCoordinate(state.snakeFood, newDisplay),
-      snakeDirection: direction,
-    };
-  }
-
-  newDisplay.set(state.snakeBody[state.snakeBody.length - 1], false);
-  // Must set head after removing tail in case they are the same coordinate
-  newDisplay.set(newHead, true);
-  return {
-    ...state,
-    status: "IN_PROGRESS",
-    display: newDisplay,
-    snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
-    snakeDirection: direction,
-  };
+    });
 };
 
 const calculateNextHeadCoordinate = (
   snakeBody: Coordinate[],
   direction: Direction,
   display: CoordinateMap,
-): Coordinate | null => {
+): Option<Coordinate> => {
   const currentHead = snakeBody[0];
   const currentTail = snakeBody[snakeBody.length - 1];
 
@@ -98,7 +95,7 @@ const calculateNextHeadCoordinate = (
     // Though the tail is occupied, it will move away in the same tick as the move
     isSameCoordinate(movedHead, currentTail);
 
-  return isExistingCoordinateUnoccupied ? movedHead : null;
+  return isExistingCoordinateUnoccupied ? some(movedHead) : none();
 };
 
 const calculateNextFoodCoordinate = (
