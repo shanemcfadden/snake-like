@@ -1,3 +1,3 @@
 # Snake-like
 
-A snake-like game implmented in TypeScript using React.
+A snake-like game implemented in TypeScript using React.
