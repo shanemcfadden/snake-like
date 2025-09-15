@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash-es";
 import {
   useCallback,
   useEffect,
@@ -34,11 +35,13 @@ export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
 
       intervalRef.current = some(
         setInterval(() => {
+          const userInput = cloneDeep(userInputRef.current);
+          resetUserInput();
+
           dispatchGameState({
             type: "TICK",
-            userInput: userInputRef.current,
+            userInput,
           });
-          resetUserInput();
         }, 200),
       );
     },

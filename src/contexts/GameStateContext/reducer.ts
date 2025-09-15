@@ -1,7 +1,6 @@
 import { STARTING_PIXEL } from "../../constants";
 import type { Coordinate, Direction } from "../../types";
 import {
-  findLast,
   getMovedCoordinate,
   getRandomCoordinate,
   getRandomInteger,
@@ -11,6 +10,7 @@ import {
   not,
   none,
   some,
+  getLast,
 } from "../../util";
 import { CoordinateMap, type GameState, type GameStateAction } from "./types";
 
@@ -37,13 +37,16 @@ export const reducer = (
     return state;
   }
 
-  const direction =
-    findLast(
-      action.userInput,
-      not(isOppositeDirection(state.snakeDirection)),
-    ) || state.snakeDirection;
+  const nextTickDirection = getNextTickDirection(
+    action.userInput,
+    state.snakeDirection,
+  );
 
-  return calculateNextHeadCoordinate(state.snakeBody, direction, state.display)
+  return calculateNextHeadCoordinate(
+    state.snakeBody,
+    nextTickDirection,
+    state.display,
+  )
     .map<GameState>((newHead) => {
       const newDisplay = state.display.clone();
 
@@ -57,7 +60,7 @@ export const reducer = (
           score: state.score + 1,
           snakeBody: [newHead, ...state.snakeBody],
           snakeFood: calculateNextFoodCoordinate(state.snakeFood, newDisplay),
-          snakeDirection: direction,
+          snakeDirection: nextTickDirection,
         };
       }
 
@@ -69,7 +72,7 @@ export const reducer = (
         status: "IN_PROGRESS",
         display: newDisplay,
         snakeBody: [newHead, ...state.snakeBody.slice(0, -1)],
-        snakeDirection: direction,
+        snakeDirection: nextTickDirection,
       };
     })
     .unwrapOrElse({
@@ -79,6 +82,14 @@ export const reducer = (
       isHighScore: state.score > state.highScore,
     });
 };
+
+const getNextTickDirection = (
+  userInputDirections: Direction[],
+  currentDirection: Direction,
+): Direction =>
+  getLast(userInputDirections)
+    .filter(not(isOppositeDirection(currentDirection)))
+    .unwrapOrElse(currentDirection);
 
 const calculateNextHeadCoordinate = (
   snakeBody: Coordinate[],
