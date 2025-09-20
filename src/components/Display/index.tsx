@@ -32,7 +32,9 @@ export const Display = () => {
             <>
               <div className="my-4 text-center text-2xl">Game Over</div>
               {gameState.isHighScore && (
-                <div className="my-4 text-center">* * * High Score * * *</div>
+                <div className="my-4 text-center text-secondary">
+                  * * * High Score * * *
+                </div>
               )}
               <div className="my-4">Final Score: {gameState.score}</div>
             </>
