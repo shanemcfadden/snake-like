@@ -1,12 +1,13 @@
 import { DISPLAY_HEIGHT, DISPLAY_WIDTH } from "../../constants";
 import type { Coordinate, Direction } from "../../types";
+import type { Option } from "../../util";
 
 export type GameState = StartOfGameState | InProgressState | EndOfGameState;
 
 type InProgressState = {
   status: "IN_PROGRESS";
   display: CoordinateMap;
-  highScore: number;
+  highScore: Option<number>;
   score: number;
   snakeDirection: Direction;
   snakeBody: Coordinate[];
@@ -20,7 +21,7 @@ type StartOfGameState = {
 type EndOfGameState = {
   status: "END";
   display: CoordinateMap;
-  highScore: number;
+  highScore: Option<number>;
   isHighScore: boolean;
   score: number;
   snakeBody: Coordinate[];

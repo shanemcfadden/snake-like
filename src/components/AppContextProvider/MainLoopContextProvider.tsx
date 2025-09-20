@@ -42,7 +42,7 @@ export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
             type: "TICK",
             userInput,
           });
-        }, 200),
+        }, 100),
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -6,6 +6,10 @@ interface IOption<T> {
   filter<U extends T>(predicate: (value: T) => value is U): Option<U>;
   filter(predicate: (value: T) => boolean): Option<T>;
 
+  isNone(): this is None<T>;
+
+  isSome(): this is Some<T>;
+
   map<U>(f: (value: T) => U): Option<U>;
 
   orElse(f: () => Option<T>): Option<T>;
@@ -20,8 +24,8 @@ export const fromNullable = <T>(value: T | null | undefined): Option<T> =>
 export const none = <T>(): Option<T> => new None<T>();
 export const some = <T>(value: T): Option<T> => new Some(value);
 
-class Some<T> implements IOption<T> {
-  private value: T;
+export class Some<T> implements IOption<T> {
+  public readonly value: T;
 
   constructor(value: T) {
     this.value = value;
@@ -33,6 +37,14 @@ class Some<T> implements IOption<T> {
 
   filter(predicate: (value: T) => boolean): Option<T> {
     return predicate(this.value) ? this : new None<T>();
+  }
+
+  isNone(): this is None<T> {
+    return false;
+  }
+
+  isSome(): this is Some<T> {
+    return true;
   }
 
   map<U>(f: (value: T) => U): Option<U> {
@@ -52,13 +64,21 @@ class Some<T> implements IOption<T> {
   }
 }
 
-class None<T> implements IOption<T> {
+export class None<T> implements IOption<T> {
   andThen<U>(): Option<U> {
     return new None<U>();
   }
 
   filter() {
     return new None<T>();
+  }
+
+  isNone(): this is None<T> {
+    return true;
+  }
+
+  isSome(): this is Some<T> {
+    return false;
   }
 
   map<U>(): Option<U> {

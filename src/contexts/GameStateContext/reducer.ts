@@ -25,7 +25,7 @@ export const reducer = (
     return {
       status: "IN_PROGRESS",
       display,
-      highScore: state.status !== "START" ? state.highScore : 0,
+      highScore: state.status === "START" ? none() : state.highScore,
       score: 0,
       snakeBody: [STARTING_PIXEL],
       snakeDirection: "right",
@@ -78,8 +78,14 @@ export const reducer = (
     .unwrapOrElse({
       ...state,
       status: "END",
-      highScore: Math.max(state.highScore, state.score),
-      isHighScore: state.score > state.highScore,
+      highScore: state.highScore
+        .orElse<number>(() => some(0))
+        .map((latestHighScore) => Math.max(latestHighScore, state.score))
+        .filter((newHighScore) => newHighScore > 0),
+      isHighScore: state.highScore
+        .orElse<number>(() => some(0))
+        .map((highScore) => state.score > highScore)
+        .unwrapOrElse(false),
     });
 };
 
@@ -120,9 +126,9 @@ const calculateNextFoodCoordinate = (
   }
 
   const randomCoordnate = getRandomCoordinate();
-  if (display.get(randomCoordnate) === true) {
-    return calculateNextFoodCoordinate(oldFoodCoordinate, display, attempt + 1);
-  }
+  const isRandomCoordinateOccupied = display.get(randomCoordnate);
 
-  return randomCoordnate;
+  return isRandomCoordinateOccupied
+    ? calculateNextFoodCoordinate(oldFoodCoordinate, display, attempt + 1)
+    : randomCoordnate;
 };
