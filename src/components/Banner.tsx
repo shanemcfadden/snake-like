@@ -1,7 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareGithub } from "@fortawesome/free-brands-svg-icons";
+import { memo } from "react";
 
-export const Banner = () => (
+export const Banner = memo(() => (
   <div className="flex justify-between">
     <div className="w-12" />
     <h1 className="my-4 text-center text-xl">Snake-like</h1>
@@ -15,6 +16,6 @@ export const Banner = () => (
       </a>
     </div>
   </div>
-);
+));
 
 const GITHUB_REPOSITORY_URL = "https://github.com/shanemcfadden/snake-like";
