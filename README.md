@@ -4,14 +4,14 @@ A browser-based snake-like game playable on desktop or mobile. Visit [https://sh
 
 ## Preview
 
-![Preview of snake-like gameplay](./repository-assets/snake-like-preview.gif)]
+![Preview of snake-like gameplay](./repository-assets/snake-like-preview.gif)
 
 ## Tools Used
 
 - TypeScript
 - React
-- Vite
 - Tailwind CSS
+- Vite
 - ESLint
 - Prettier
 - pnpm
@@ -20,8 +20,8 @@ A browser-based snake-like game playable on desktop or mobile. Visit [https://sh
 
 ### Prerequisites
 
-- Node.js (see ./mise.toml for specific version)
-- pnpm (see ./mise.toml for specific version)
+- Node.js (see [mise.toml](./mise.toml) for specific version)
+- pnpm (see [mise.toml](./mise.toml) for specific version)
 
 ### Steps
 
@@ -29,4 +29,4 @@ A browser-based snake-like game playable on desktop or mobile. Visit [https://sh
 1. Navigate to the project directory.
 1. Run `pnpm install` to install dependencies.
 1. Run `pnpm dev` to start the development server.
-1. Open your browser and go to `http://localhost:5173/snake-like` to play the game.
+1. Open your browser and navigate to `http://localhost:5173/snake-like` to play the game.
