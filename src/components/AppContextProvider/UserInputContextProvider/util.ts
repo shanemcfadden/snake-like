@@ -1,7 +1,18 @@
 import type { Direction } from "../../../types";
+import { not } from "../../../util";
 import { none, some, type Option } from "../../../util/option";
 
-export const keyToDirection = (key: string): Option<Direction> => {
+export const keyboardEventToDirection = (e: KeyboardEvent): Option<Direction> =>
+  some(e)
+    .filter((e) => !e.repeat)
+    .filter(not(isModifiedEvent))
+    .map((e) => e.key)
+    .andThen(keyToDirection);
+
+const isModifiedEvent = (e: KeyboardEvent) =>
+  e.altKey || e.ctrlKey || e.metaKey;
+
+const keyToDirection = (key: string): Option<Direction> => {
   switch (key) {
     case "ArrowUp":
     case "w":
