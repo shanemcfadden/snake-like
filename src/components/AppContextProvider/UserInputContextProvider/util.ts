@@ -9,9 +9,7 @@ export const keyboardEventToDirection = (e: KeyboardEvent): Option<Direction> =>
     .map((e) => e.key)
     .andThen(keyToDirection);
 
-const isModifiedEvent = (e: KeyboardEvent) => {
-  return e.altKey || e.ctrlKey || e.metaKey;
-};
+const isModifiedEvent = (e: KeyboardEvent) => e.altKey || e.ctrlKey || e.metaKey;
 
 const keyToDirection = (key: string): Option<Direction> => {
   switch (key) {
