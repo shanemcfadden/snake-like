@@ -8,7 +8,7 @@ import {
 import type { Direction } from "../../../types";
 import { useActiveDirections } from "./useActiveDirections";
 import { UserInputContext } from "../../../contexts/UserInputContext";
-import { keyToDirection } from "./util";
+import { keyboardEventToDirection } from "./util";
 
 export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
   const ref = useRef<Direction[]>([]);
@@ -22,21 +22,18 @@ export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const handleArrowKeydown = (e: KeyboardEvent) => {
-      e.preventDefault();
-      if (e.repeat) {
-        return;
-      }
-
-      keyToDirection(e.key).map((direction) => {
+      keyboardEventToDirection(e).map((direction) => {
+        e.preventDefault();
         dispatchDirection(direction);
         addActiveDirection(direction);
       });
     };
 
     const handleArrowKeyup = (e: KeyboardEvent) => {
-      e.preventDefault();
-
-      keyToDirection(e.key).map(removeActiveDirection);
+      keyboardEventToDirection(e).map((direction) => {
+        e.preventDefault();
+        removeActiveDirection(direction);
+      });
     };
 
     window.addEventListener("keydown", handleArrowKeydown);
