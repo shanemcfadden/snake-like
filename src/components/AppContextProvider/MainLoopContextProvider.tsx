@@ -15,18 +15,18 @@ import { MainLoopContext } from "../../contexts/MainLoopContext";
 import { none, some, type Option } from "../../util";
 
 export const MainLoopContextProvider = ({ children }: PropsWithChildren) => {
-  const gameState = useGameStateContext();
+  const { status: gameStateStatus } = useGameStateContext();
   const dispatchGameState = useGameStateDispatchContext();
 
   const { ref: userInputRef, reset: resetUserInput } = useUserInputContext();
   const intervalRef = useRef<Option<number>>(INITIAL_INTERVAL_REF);
 
   useEffect(() => {
-    if (gameState.status === "END") {
+    if (gameStateStatus === "END") {
       intervalRef.current.map(clearInterval);
       intervalRef.current = none();
     }
-  }, [gameState]);
+  }, [gameStateStatus]);
 
   const start = useCallback(
     () => {
