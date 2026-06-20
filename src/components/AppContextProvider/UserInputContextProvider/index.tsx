@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useEffectEvent,
   useMemo,
   useRef,
   type PropsWithChildren,
@@ -20,22 +21,22 @@ export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
   const { activeDirections, addActiveDirection, removeActiveDirection } =
     useActiveDirections();
 
+  const handleArrowKeydown = useEffectEvent((e: KeyboardEvent) => {
+    keyboardEventToDirection(e).map((direction) => {
+      e.preventDefault();
+      dispatchDirection(direction);
+      addActiveDirection(direction);
+    });
+  });
+
+  const handleArrowKeyup = useEffectEvent((e: KeyboardEvent) => {
+    keyboardEventToDirection(e).map((direction) => {
+      e.preventDefault();
+      removeActiveDirection(direction);
+    });
+  });
+
   useEffect(() => {
-    const handleArrowKeydown = (e: KeyboardEvent) => {
-      keyboardEventToDirection(e).map((direction) => {
-        e.preventDefault();
-        dispatchDirection(direction);
-        addActiveDirection(direction);
-      });
-    };
-
-    const handleArrowKeyup = (e: KeyboardEvent) => {
-      keyboardEventToDirection(e).map((direction) => {
-        e.preventDefault();
-        removeActiveDirection(direction);
-      });
-    };
-
     window.addEventListener("keydown", handleArrowKeydown);
     window.addEventListener("keyup", handleArrowKeyup);
 
@@ -43,7 +44,7 @@ export const UserInputContextProvider = ({ children }: PropsWithChildren) => {
       window.removeEventListener("keydown", handleArrowKeydown);
       window.removeEventListener("keyup", handleArrowKeyup);
     };
-  }, [dispatchDirection, addActiveDirection, removeActiveDirection]);
+  }, []);
 
   const reset = useCallback(() => {
     ref.current = [];
